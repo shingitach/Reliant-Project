@@ -4,7 +4,7 @@
     </head>
     <body>
         <%- include('partials/navbar1.ejs') %>
-        <div class="container">
+        <div class="bookings">
             <h2>Book a Hotel Reservation</h2>
             <form method="POST" action="/bookings">
                 <label for="fullName">Full Name</label>
@@ -39,12 +39,14 @@
                 <label for="numberOfDays">Number of Days</label>
                 <input type="number" id="numberOfDays" name="numberOfDays" readonly><br>
                 
-                <label for="roomType">Room Type</label>
+                <label for="roomType">Room Types</label>
                 <select id="roomType" name="roomType" required>
-                    <option value="single">Single</option>
-                    <option value="double">Double</option>
-                    <option value="suite">Suite</option>
+                    <% roomTyps.forEach((roomTyp) => { %>
+                    <option value="<%= roomTyp.room_type %>"><%= roomTyp.room_type %></option>
+                    <% }); %>
                 </select><br>
+                <label for="Amount">Amount</label>
+                <input type="number" id="Amount" name="Amount" readonly><br>
                 
                 <button type="submit">Book Now</button>
             </form>
@@ -60,4 +62,5 @@
         </script>
     </body>
 </html>
+
 

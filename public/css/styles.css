@@ -7,3 +7,26 @@ p  { color:red;}
     max-width: 600px; 
     margin-left: 20px; 
     } 
+    
+    .login {
+        text-align:center;
+        border-style:solid;
+        border-color:rgb(117, 97, 44);
+        border-width: 2px;
+        margin-right:500px;
+        margin-left:500px ;
+        margin-top: 100px;
+        padding-bottom:10px;
+    }
+
+    .bookings {
+        text-align:center;
+        border-style:solid;
+        border-color:rgb(117, 97, 44);
+        border-width: 2px;
+        margin-right:500px;
+        margin-left:500px ;
+        margin-top: 100px;
+        padding-bottom:10px;
+    }
+    }

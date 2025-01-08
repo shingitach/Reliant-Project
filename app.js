@@ -57,6 +57,40 @@ app.post('/auth', function(req, res){
         res.end();
     }
 });
+
+app.post('/bookings', (req, res) => {
+    const {
+        fullName,
+        email,
+        mobile,
+        checkinDate,
+        checkoutDate,
+       // noOfAdults,
+       // noOfChildren,
+        //noOfInfants,
+       // noOfPets,
+        //roomType,
+       // roomNumber,
+       // roomPrice,
+        //totalAmount,
+        //paymentMethod,
+    } = req.body;
+
+    if (!fullName || !email || !mobile || !checkinDate || !checkoutDate) {
+        res.status(400).send('Please fill out all fields!');
+        return;
+    }
+
+    const INSERT = `INSERT INTO bookings (fullname, email, mobile, checkin, checkout, customer_id) VALUES ("${fullName}", "${email}", "${mobile}", "${checkinDate}", "${checkoutDate}","1")`;
+    conn.query(INSERT, (error, results, fields) => {
+        if (error) {
+            console.error(error);
+            res.status(500).send('Error occurred while inserting record');
+        } else {
+            res.redirect('/home');
+        }
+    });
+});
 app.get('/membersOnly', function (req, res, next) {
     if (req.session.loggedin) {
         res.render('membersOnly');
@@ -112,9 +146,17 @@ app.post('/register', function(req, res) {
         console.log("Error");
     }
 });
-
-
-
+app.get('/bookings', function (req, res) {
+    const sql = 'SELECT DISTINCT room_type FROM roomtypes';
+    conn.query(sql, (err, rows) => {
+        if (err) {
+            console.error('Error executing query: ' + err.message);
+            res.status(500).send({ message: 'Error fetching room types' });
+        } else {
+            res.render('bookings', { roomTyps: rows });
+        }
+    });
+});
 
 /* app.get('/listMPs', function (req, res){
     conn.query("SELECT * FROM mps", function(err, result) {
