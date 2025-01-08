@@ -1,0 +1,33 @@
+<%- include('partials/header.ejs') %>
+
+<!DOCTYPE html>
+<html>
+	<body>
+		<div class="register">
+			<h1>Register</h1>
+			<br>
+			<form action="/register" method="post">
+				<label for="firstname">First Name:</label>
+				<input type="text" name="name" placeholder="name" id="name" required>
+				<br><br>
+				<label for="surname" for="surname">Last Name:</label>
+				<input type="text" name="surname" placeholder="surname" id="surname" required>
+				<br><br>
+				<label for="email">Email:</label>
+				<input type="text" name="email" placeholder="Email"
+				id="email" required>
+				<br><br>
+				<label for="password">Password:</label>
+				<input type="password" name="password" placeholder="Password" id="password" required>
+				<br><br>
+				<label for="admin">Admin:</label>admin
+				<select id="admin" name="admin" required>
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+				</select><br>
+                   
+				<input type="submit" value="Register">
+			</form>
+		</div>
+	</body>
+</html>

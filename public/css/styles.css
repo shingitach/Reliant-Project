@@ -1,0 +1,9 @@
+h1 { color:red;}
+h4 { color: purple; } 
+h2 { color: rgba(165, 142, 42, 0.527); }
+p  { color:red;}
+.img2 { 
+    float: right  ; 
+    max-width: 600px; 
+    margin-left: 20px; 
+    } 
