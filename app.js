@@ -72,16 +72,16 @@ app.post('/bookings', (req, res) => {
         //roomType,
        // roomNumber,
        // roomPrice,
-        //totalAmount,
+        totalAmount = 100,
         //paymentMethod,
     } = req.body;
 
-    if (!fullName || !email || !mobile || !checkinDate || !checkoutDate) {
+    if (!fullName || !email || !mobile || !checkinDate || !checkoutDate ||!totalAmount) {
         res.status(400).send('Please fill out all fields!');
         return;
     }
 
-    const INSERT = `INSERT INTO bookings (fullname, email, mobile, checkin, checkout, customer_id) VALUES ("${fullName}", "${email}", "${mobile}", "${checkinDate}", "${checkoutDate}","1")`;
+    const INSERT = `INSERT INTO bookings (fullname, email, mobile, checkin, checkout, amount, customer_id) VALUES ("${fullName}", "${email}", "${mobile}", "${checkinDate}", "${checkoutDate}","${totalAmount}","1")`;
     conn.query(INSERT, (error, results, fields) => {
         if (error) {
             console.error(error);
@@ -153,11 +153,35 @@ app.get('/bookings', function (req, res) {
             console.error('Error executing query: ' + err.message);
             res.status(500).send({ message: 'Error fetching room types' });
         } else {
+            
             res.render('bookings', { roomTyps: rows });
+            
         }
+        console.log(rows);
     });
 });
 
+// Assuming you're using Express and a MySQL database connection
+
+app.get('/get-room-price/:roomTypeId', (req, res) => {
+    const roomTypeId = req.params.roomTypeId;
+  
+    const query = 'SELECT price FROM roomtypes WHERE room_id = ?';
+    conn.query(query, [roomTypeId], (err, results) => {
+      if (err) {
+        console.error('Error fetching room price:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+  
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Room type not found' });
+      }
+  
+      const price = results[0].price;
+      res.json({ price });
+    });
+  });
+  
 /* app.get('/listMPs', function (req, res){
     conn.query("SELECT * FROM mps", function(err, result) {
         if (err) throw err;

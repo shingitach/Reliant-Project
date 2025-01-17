@@ -47,6 +47,56 @@
                 </select><br>
                 <label for="Amount">Amount</label>
                 <input type="number" id="Amount" name="Amount" readonly><br>
+                <script>
+                    document.getElementById('roomType').addEventListener('change', function() {
+                        const roomTypeId = this.value;
+                        fetch(`/get-room-price/${roomTypeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                const roomPrice = data.price;
+                                const numberOfDays = document.getElementById('numberOfDays').value;
+                                const totalAmount = roomPrice * numberOfDays;
+                                document.getElementById('Amount').value = totalAmount;
+                            })
+                            .catch(error => console.error('Error fetching room price:', error));
+                    });
+
+                 /*    document.getElementById('checkoutDate').addEventListener('change', function() {
+                        const checkinDate = new Date(document.getElementById('checkinDate').value);
+                        const checkoutDate = new Date(this.value);
+                        const timeDifference = checkoutDate - checkinDate;
+                        const daysDifference = timeDifference / (1000 * 3600 * 24);
+                        document.getElementById('numberOfDays').value = daysDifference > 0 ? daysDifference : ''; */
+/* 
+                    document.getElementById('checkoutDate').addEventListener('change', function() {
+                        const daysDifference = calculateDaysDifference(
+                            document.getElementById('checkinDate').value,
+                            this.value */
+
+                            const checkinDate = new Date(document.getElementById('checkinDate').value);
+                    const checkoutDate = new Date(this.value);
+                const daysDifference = calculate_days(checkinDate, checkoutDate);
+                            document.getElementById('numberOfDays').value = daysDifference;
+                        );
+                    /*     document.getElementById('numberOfDays').value = daysDifference > 0 ? daysDifference : '';
+                        const roomTypeId = document.getElementById('roomType').value;
+                        if (roomTypeId) {
+                            fetch(`/get-room-price/${roomTypeId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const roomPrice = data.price;
+                                    const totalAmount = roomPrice * daysDifference;
+                                    document.getElementById('Amount').value = totalAmount;
+                                })
+                                .catch(error => console.error('Error fetching room price:', error));
+                        } */
+                        const roomTypeId = document.getElementById('roomType').value;
+    const sqlConnection = null; // You may need to modify this to pass the actual SQL connection object
+    const totalAmount = calculate_total(daysDifference, sqlConnection, roomTypeId);
+    document.getElementById('Amount').value = totalAmount;
+  });
+                    });
+                </script>
                 
                 <button type="submit">Book Now</button>
             </form>
