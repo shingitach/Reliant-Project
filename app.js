@@ -21,6 +21,7 @@ app.use(session({
 app.use(express.json()); 
 //app.use(express.urlencoded({ extended: true}));
 app.use('/public', express.static('public'));
+app.use('/js', express.static('js'));
 // This uses the public external css settings for paragraphs and header style/fonts
 
 // Body parser middleware to parse form data
@@ -72,16 +73,16 @@ app.post('/bookings', (req, res) => {
         //roomType,
        // roomNumber,
        // roomPrice,
-        totalAmount = 100,
+        Amount,
         //paymentMethod,
     } = req.body;
 
-    if (!fullName || !email || !mobile || !checkinDate || !checkoutDate ||!totalAmount) {
+    if (!fullName || !email || !mobile || !checkinDate || !checkoutDate ||!Amount) {
         res.status(400).send('Please fill out all fields!');
         return;
     }
 
-    const INSERT = `INSERT INTO bookings (fullname, email, mobile, checkin, checkout, amount, customer_id) VALUES ("${fullName}", "${email}", "${mobile}", "${checkinDate}", "${checkoutDate}","${totalAmount}","1")`;
+    const INSERT = `INSERT INTO bookings (fullname, email, mobile, checkin, checkout, amount, customer_id) VALUES ("${fullName}", "${email}", "${mobile}", "${checkinDate}", "${checkoutDate}","${Amount}","1")`;
     conn.query(INSERT, (error, results, fields) => {
         if (error) {
             console.error(error);
