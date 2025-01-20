@@ -36,8 +36,21 @@
             </form>
         </div>
         <script>
+            //calculates number of days and amount when there is a date change
             document.getElementById('checkoutDate').addEventListener('change', function() {
                 calculateNumberOfDays();
+                calculateAmount();
+            });
+            document.getElementById('checkinDate').addEventListener('change', function() {
+                calculateNumberOfDays();
+                calculateAmount();
+            });
+            document.getElementById('numberOfDays').addEventListener('change', function() {
+                calculateNumberOfDays();
+                calculateAmount();
+            });
+            document.getElementById('roomType').addEventListener('change', function() {
+               // calculateNumberOfDays();
                 calculateAmount();
             });
         </script>
