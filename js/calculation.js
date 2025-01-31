@@ -1,8 +1,8 @@
 function validateCheckinDate(value) {
     const checkinDate = new Date(value);
     const today = new Date();
-    if (checkinDate < today) {
-        alert('Check-in date must not be less than today');
+    if (checkinDate < today)  {
+        alert('Check-in date must not be less than today or check out ');
         document.getElementById('checkinDate').value = '';
     }
 }
@@ -17,16 +17,20 @@ function validateCheckoutDate(value) {
 }
  
 function calculateNumberOfDays() {
+   
     const checkinDate = new Date(document.getElementById('checkinDate').value);
     const checkoutDate = new Date(document.getElementById('checkoutDate').value);
-    const timeDifference = checkoutDate - checkinDate;
-    const daysDifference = timeDifference / (1000 * 3600 * 24);
-    document.getElementById('numberOfDays').value = daysDifference > 0 ? daysDifference : '';
+        if (checkinDate && checkoutDate) {
+        const timeDifference = checkoutDate - checkinDate;
+        const daysDifference = timeDifference / (1000 * 3600 * 24);
+        document.getElementById('numberOfDays').value = daysDifference > 0 ? daysDifference : '';
+    }
 }
  
 function calculateAmount() {
     const roomType = document.getElementById('roomType').value;
     const numberOfDays = document.getElementById('numberOfDays').value;
+    if (numberOfDays > 0) {
     // Example pricing logic based on room type
     let pricePerDay = 0;
     if (roomType === 'single') {
@@ -39,4 +43,5 @@ function calculateAmount() {
  
     const totalAmount = pricePerDay * numberOfDays;
     document.getElementById('Amount').value = totalAmount > 0 ? totalAmount : '';
+    }
 }
