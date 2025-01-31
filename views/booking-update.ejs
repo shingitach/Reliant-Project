@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <%- include('partials/header1.ejs') %>
+        <script src="/js/calculation.js"></script>
+    </head>
+    <body>	
+<div class="container mt-5">
+	<div class="row">			
+	<h1 class="bd-title">Change your Bookings</h1>
+		<div class="col-sm-8">					
+			<form action="/booking-update/<%=id%>" method="POST" name="update">							
+			
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" value="<%=fullname%>" placeholder="Enter your full name" name="fullname" required><br>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" value="<%=email%>" placeholder="Enter your email" name="email" required><br>
+                <label for="mobile">Mobile Number</label>
+                <input type="mobile" id="mobile" value="<%=mobile%>" placeholder="Enter your mobile number" name="mobile" required><br>
+                
+                <label for="checkinDate">Check-in Date</label>
+                <input type="date" id="checkinDate"value="<%=checkinDate%>" name="checkinDate" required><br>
+                <label for="checkoutDate">Check-out Date</label>
+                <input type="date" id="checkoutDate" value="<%=checkoutDate%>" name="checkoutDate" required><br>
+
+                <label for roomType>Room Type</label>
+                <input type="text" id="roomType" value="<%=roomType%>" name="roomType" required><br>
+                
+                <label for="numberOfDays">Number of Days</label>
+                <input type="number" id="numberOfDays" value="<%=numberOfDays%>" name="numberOfDays" readonly><br>
+                
+     
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" value="<%=amount%>" name="amount" readonly><br>
+                
+                <button type="submit">Update</button>
+            </form>
+        <!-- </div>
+		<input class="btn" type="submit" name="Submit" value="Update" />	
+				<input type="hidden" name="_method" value="PUT" />						  
+			</form>					
+		</div>				 -->
+	</div>
+</div>
+<%- include ( "partials/footer"); -%>
+
+        <script>
+            //calculates number of days and amount when there is a date change
+            document.getElementById('checkoutDate').addEventListener('change', function() {
+                calculateNumberOfDays();
+                calculateAmount();
+            });
+            document.getElementById('checkinDate').addEventListener('change', function() {
+                calculateNumberOfDays();
+                calculateAmount();
+            });
+            document.getElementById('numberOfDays').addEventListener('change', function() {
+                calculateNumberOfDays();
+                calculateAmount();
+            });
+            document.getElementById('roomType').addEventListener('change', function() {
+               // calculateNumberOfDays();
+                calculateAmount();
+            });
+        </script>
+    </body>
+</html>
+
+
+				

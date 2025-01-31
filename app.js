@@ -1,12 +1,16 @@
-var express = require('express'); 
+const express = require('express'); 
 //This line imports the Express framework by requiring the 'express' module.  
 // The express variable now holds the reference  to the Express application.
-var app = express(); 
+const app = express(); 
 // This line creates an instance of the Express application.  
 // The 'app' variable is used to configure and control the server.
-var session = require('express-session');
+
+
+const session = require('express-session');
+var flash = require('req-flash');
 var conn = require('./dbConfig');
 //setting connection the db
+
 app.set('view engine','ejs'); 
 // configures Express to use  EJS as the view engine. 
 // EJS allows us to embed JavaScript code directly in our HTML templates. 
@@ -14,8 +18,12 @@ var bodyParser = require('body-parser');
 
 app.use(session({
     secret: 'yoursecret',
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 60000 // sets the cookie to expire in 1 minute
+      }
+    
 }));
 //creates the db login session
 app.use(express.json()); 
@@ -26,6 +34,7 @@ app.use('/js', express.static('js'));
 
 // Body parser middleware to parse form data
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(flash());
 app.get('/', function (req, res){ 
            res.render("home"); 
 }); 
@@ -70,24 +79,26 @@ app.post('/bookings', (req, res) => {
        // noOfChildren,
         //noOfInfants,
        // noOfPets,
-        //roomType,
+        roomType,
        // roomNumber,
        // roomPrice,
+       numberOfDays,
         Amount,
         //paymentMethod,
     } = req.body;
 
-    if (!fullName || !email || !mobile || !checkinDate || !checkoutDate ||!Amount) {
+    if (!fullName || !email || !mobile || !checkinDate || !checkoutDate ||!roomType ||!Amount ||!numberOfDays) {
         res.status(400).send('Please fill out all fields!');
         return;
     }
 
-    const INSERT = `INSERT INTO bookings (fullname, email, mobile, checkin, checkout, amount, customer_id) VALUES ("${fullName}", "${email}", "${mobile}", "${checkinDate}", "${checkoutDate}","${Amount}","1")`;
+    const INSERT = `INSERT INTO bookings (fullname, email, mobile, checkin, checkout,room_type, amount, days_num, customer_id) VALUES ("${fullName}", "${email}", "${mobile}", "${checkinDate}", "${checkoutDate}","${roomType}","${Amount}","${numberOfDays}","1")`;
     conn.query(INSERT, (error, results, fields) => {
         if (error) {
             console.error(error);
             res.status(500).send('Error occurred while inserting record');
         } else {
+            console.log('Record inserted successfully!, Your booking amount is : '+Amount+'$');
             res.redirect('/home');
         }
     });
@@ -162,6 +173,120 @@ app.get('/bookings', function (req, res) {
     });
 });
 
+app.get('/viewbookings', function(req, res, next){		
+	conn.query("SELECT * FROM bookings ",  function (err, result) {
+		if (err) throw err;
+		console.log(result);		
+		res.render('viewbookings',
+		{ title: 'viewbookings', eData: result})					
+	});     
+});
+
+//UPDATE BOOKINGS
+app.get('/booking-update/(:id)', function(req, res, next){
+	conn.query('SELECT * FROM bookings WHERE id = ' + req.params.id, function(err, rows, fields) {
+		if(err) throw err			
+		if (rows.length <= 0) {
+			req.flash('error', 'Reservation id not found = ' + req.params.id)
+			res.redirect('/booking-update')
+		}
+		else { 
+            /* const sql = 'SELECT DISTINCT room_type FROM roomtypes';
+            conn.query(sql, (err2, rows) => {
+                if (err2) {
+                    console.error('Error executing query: ' + err2.message);
+                    res.status(500).send({ message: 'Error fetching room types' });
+                } else { */
+                    
+                
+               
+			res.render('booking-update', {				
+				id: rows[0].id,
+				checkinDate: new Date (rows[0].checkin).toISOString().split("T")[0],
+				checkoutDate: new Date (rows[0].checkout).toISOString().split("T")[0],
+				numberOfDays: rows[0].days_num,	
+				amount: rows[0].amount,
+                email: rows[0].email,
+                roomType: rows[0].room_type,
+                fullname: rows[0].fullname,
+                mobile: rows[0].mobile
+
+
+               							
+            })
+        }
+       /*  })
+        } */
+    });		
+});
+
+//UPDATE BOOKINGS
+
+app.post('/booking-update/(:id)', function(req, res, next) {    
+    var booking = {            
+        checkin: req.body.checkinDate,
+        checkout: req.body.checkoutDate,
+        days_num: req.body.numberOfDays,
+        amount: req.body.amount,
+        email: req.body.email,
+        room_type: req.body.roomType,
+        fullname: req.body.fullname,
+        mobile: req.body.mobile
+
+    }        
+    const query = 'UPDATE bookings SET ? WHERE id = ?';
+    conn.query(query, [booking, req.params.id], function(err, result) {
+        if(err) {
+            console.error(err);
+           req.flash('error', 'Error updating booking');
+            res.redirect("/bookings");
+        } else {
+          req.flash('success', 'Reservation updated successfully!');
+            res.redirect("/viewbookings");
+        }
+    });    
+});
+/* app.post('/booking-update/(:id)', function(req, res, next) {    
+    var booking = {            
+        checkin: req.body.checkinDate,
+		checkout: req.body.checkoutDate,
+        days_num: req.body.numberOfDays,
+        amount: req.body.amount,
+        email: req.body.email,
+        room_type: req.body.roomType,
+        fullname: req.body.fullname,
+        mobile: req.body.mobile
+
+    }        
+    conn.query('UPDATE bookings SET ? WHERE id = ' + req.params.id, booking, function(err, result) {
+       // if(err) throw err{
+        if (err) {
+            //console.log("error");
+            req.flash('error', err)    
+            res.redirect("/bookings")
+            
+        } else {
+            req.flash('success', 'Reservation updated successfully!')                
+            res.redirect("/bookings")
+        }
+    });    
+}); */
+
+ 
+//DELETE BOOKINGS
+app.post('/delete/(:id)', function(req, res, next) {
+	var booking = { id: req.params.id }		
+	conn.query('DELETE FROM bookings WHERE id = ' + req.params.id, function(err, result) {
+		//if(err) throw err
+		if (err) {
+			req.flash('error', err)			
+			res.redirect('/bookings')
+		} else {
+			req.flash('success', 'Reservation deleted successfully! id = ' + req.params.id)			
+			res.redirect('/bookings')
+		}
+	})	
+})
 // Assuming you're using Express and a MySQL database connection
 
 app.get('/get-room-price/:roomTypeId', (req, res) => {
@@ -191,6 +316,8 @@ app.get('/get-room-price/:roomTypeId', (req, res) => {
     });
 }); */
 
+
+
 app.get('/contactus',function (req, res){
      res.render("contactus");
 });
@@ -206,4 +333,4 @@ app.listen(3100);
 // This line makes the Express application  listen on port 3000 for incoming requests. 
 // It starts the server and makes it ready  to handle HTTP requests. 
 // The listen method takes the port number (3000 in this case) as an argument. 
-console.log('Node app is running on port 3100'); 
+console.log('Node app is running on port 3100');

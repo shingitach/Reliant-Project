@@ -1,63 +1,63 @@
 <html>
     <head>
         <%- include('partials/header1.ejs') %>
+       
     </head>
     <body>
-        <%- include('partials/navbar1.ejs') %>
-        <div class="container">
-            <h2>Book a Hotel Reservation</h2>
-            <form method="POST" action="/bookings">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" placeholder="Enter your full name" name="fullName" required><br>
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="Enter your email" name="email" required><br>
-                <label for="mobile">Mobile Number</label>
-                <input type="tel" id="mobile" placeholder="Enter your mobile number" name="mobile" required><br>
-                
-                <label for="checkinDate">Check-in Date</label>
-                <input type="date" id="checkinDate" name="checkinDate" required min="<%= new Date().toISOString().split('T')[0] %>" onchange="
-                    const checkinDate = new Date(this.value);
-                    const today = new Date();
-                    if (checkinDate < today) {
-                        alert('Check-in date must not be less than today');
-                        this.value = '';
-                    }
-                "><br>
-                
-                
-                
-                <label for="checkoutDate">Check-out Date</label>
-                <input type="date" id="checkoutDate" name="checkoutDate" required min="<%= new Date().toISOString().split('T')[0] %>" onchange="
-                    const checkinDate = new Date(document.getElementById('checkinDate').value);
-                    const checkoutDate = new Date(this.value);
-                    if (checkoutDate < checkinDate) {
-                        alert('Check-out date must not be less than check-in date');
-                        this.value = '';
-                    }
-                "><br>
-                
-                <label for="numberOfDays">Number of Days</label>
-                <input type="number" id="numberOfDays" name="numberOfDays" readonly><br>
-                
-                <label for="roomType">Room Type</label>
-                <select id="roomType" name="roomType" required>
-                    <option value="single">Single</option>
-                    <option value="double">Double</option>
-                    <option value="suite">Suite</option>
-                </select><br>
-                
-                <button type="submit">Book Now</button>
-            </form>
-        </div>
-        <script>
-            document.getElementById('checkoutDate').addEventListener('change', function() {
-                const checkinDate = new Date(document.getElementById('checkinDate').value);
-                const checkoutDate = new Date(this.value);
-                const timeDifference = checkoutDate - checkinDate;
-                const daysDifference = timeDifference / (1000 * 3600 * 24);
-                document.getElementById('numberOfDays').value = daysDifference > 0 ? daysDifference : '';
-            });
-        </script>
-    </body>
-</html>
+        <%- include('partials/navbar2.ejs') %>	
+<div class="container mt-5">			
+	<div class="heading2">
+			<h1>View Bookings</h1>			
+		</div>		
+	<div id="divGet">
+		<table class="table table-striped" style="height: 150px;">
+			<tr>
+				<th>Name1</th>
+				<th>Email</th>
+				<th>Mobile</th>
+				<th>Checking Date</th>
+				<th>Checkout Date</th>
+				<th>Number Of Days</th>
+				<th>Created On</th>
+				<th>Amount</th>
+				<th>Room Type</th>
+				<th>Change your bookings</th>
+				<th>Delete</th>				
+			</tr>					
+			<%
+				if (eData.length !=0) {var i=1; eData.forEach( function(data) {						
+			%>
+			<tr>						
+				<td><%=data.fullname%></td>
+				<td><%=data.email%></td>
+				<td><%=data.mobile%></td>
+				<td><%=data.checkin.toLocaleDateString()%></td>
+				<td><%=data.checkout.toLocaleDateString()%></td>
+				<td><%=data.days_num%></td>
+				<td><%=data.created_on.toLocaleDateString()%></td>
+				<td><%=data.amount%></td>
+				<td><%=data.roomType%></td>
+			
+ 												
+				<td><a href="/booking-update/<%=data.id%>" class="btn">Update</a></td>	 
+				<td>
+					<form method="post" action="/delete/<%= data.id %>">
+						<input class="btn" type="submit" name="delete" value='Delete' onClick="return confirm('This will remove the booking record, are you sure?')" />
+						<input type="hidden" name="_method" value="DELETE" />
+					</form>
+				</td>
+			</tr>
+			<% i++; }) %> <%}%>					
+		</table>
+	</div>
+	<!-- <div id="book-now">									
+		<a class="btn" href="newbooking">
+			<span>New Booking</span>
+		 </a>									
+	</div> -->
+</div>
+</body>
 
+</html>
+	
+<%- include ( "partials/footer"); -%>	
