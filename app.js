@@ -7,7 +7,7 @@ const app = express();
 
 
 const session = require('express-session');
-var flash = require('req-flash');
+
 var conn = require('./dbConfig');
 //setting connection the db
 
@@ -34,6 +34,7 @@ app.use('/js', express.static('js'));
 
 // Body parser middleware to parse form data
 app.use(bodyParser.urlencoded({ extended: false }));
+var flash = require('req-flash');
 app.use(flash());
 app.get('/', function (req, res){ 
            res.render("home"); 
@@ -123,20 +124,7 @@ app.get('/membersOnly', function (req, res, next) {
 }); 
  
 
-/* app.post("/addMps", function(req, res) {
-    let id = req.body.id;
-    let name = req.body.name;
-    let party = req.body.party;
-    const insert = `INSERT INTO mps (id, name, party) VALUES ("${id}", "${name}", "${party}")`;
-    conn.query(insert, function(err, result) {
-        if(err) throw err;
-        console.log('record inserted');
-        res.send('Mp Added')
-    })
-   res.send(id+" "+name+" "+party)
- 
-}) */
- 
+
  
 //This will send a POST request to '/register' which will store 
 //the user information in a table.
@@ -184,40 +172,36 @@ app.get('/viewbookings', function(req, res, next){
 
 //UPDATE BOOKINGS
 app.get('/booking-update/(:id)', function(req, res, next){
-	conn.query('SELECT * FROM bookings WHERE id = ' + req.params.id, function(err, rows, fields) {
-		if(err) throw err			
-		if (rows.length <= 0) {
-			req.flash('error', 'Reservation id not found = ' + req.params.id)
-			res.redirect('/booking-update')
+	const sql = 'SELECT DISTINCT room_type FROM roomtypes';
+    conn.query(sql, (err, rows) => {
+        if (err) {
+            console.error('Error executing query: ' + err.message);
+            res.status(500).send({ message: 'Error fetching room types' });
+        } else { 
+			conn.query('SELECT * FROM bookings WHERE id = ' + req.params.id, function(err2, rows2, fields) {
+				if(err2) throw err2			
+				if (rows2.length <= 0) {
+					req.flash('error', 'Reservation id not found = ' + req.params.id)
+					res.redirect('/booking-update')
+				}
+				else { 
+
+					res.render('booking-update', {				
+						id: rows2[0].id,
+						checkinDate: new Date (rows2[0].checkin).toISOString().split("T")[0],
+						checkoutDate: new Date (rows2[0].checkout).toISOString().split("T")[0],
+						numberOfDays: rows2[0].days_num,	
+						amount: rows2[0].amount,
+						email: rows2[0].email,
+						roomType: rows2[0].room_type,
+						fullname: rows2[0].fullname,
+						mobile: rows2[0].mobile,
+						roomTyps: rows
+					})
+				}
+			});		
 		}
-		else { 
-            /* const sql = 'SELECT DISTINCT room_type FROM roomtypes';
-            conn.query(sql, (err2, rows) => {
-                if (err2) {
-                    console.error('Error executing query: ' + err2.message);
-                    res.status(500).send({ message: 'Error fetching room types' });
-                } else { */
-                    
-                
-               
-			res.render('booking-update', {				
-				id: rows[0].id,
-				checkinDate: new Date (rows[0].checkin).toISOString().split("T")[0],
-				checkoutDate: new Date (rows[0].checkout).toISOString().split("T")[0],
-				numberOfDays: rows[0].days_num,	
-				amount: rows[0].amount,
-                email: rows[0].email,
-                roomType: rows[0].room_type,
-                fullname: rows[0].fullname,
-                mobile: rows[0].mobile
-
-
-               							
-            })
-        }
-       /*  })
-        } */
-    });		
+	});
 });
 
 //UPDATE BOOKINGS
@@ -246,47 +230,24 @@ app.post('/booking-update/(:id)', function(req, res, next) {
         }
     });    
 });
-/* app.post('/booking-update/(:id)', function(req, res, next) {    
-    var booking = {            
-        checkin: req.body.checkinDate,
-		checkout: req.body.checkoutDate,
-        days_num: req.body.numberOfDays,
-        amount: req.body.amount,
-        email: req.body.email,
-        room_type: req.body.roomType,
-        fullname: req.body.fullname,
-        mobile: req.body.mobile
 
-    }        
-    conn.query('UPDATE bookings SET ? WHERE id = ' + req.params.id, booking, function(err, result) {
-       // if(err) throw err{
-        if (err) {
-            //console.log("error");
-            req.flash('error', err)    
-            res.redirect("/bookings")
-            
-        } else {
-            req.flash('success', 'Reservation updated successfully!')                
-            res.redirect("/bookings")
-        }
-    });    
-}); */
 
  
 //DELETE BOOKINGS
 app.post('/delete/(:id)', function(req, res, next) {
 	var booking = { id: req.params.id }		
-	conn.query('DELETE FROM bookings WHERE id = ' + req.params.id, function(err, result) {
-		//if(err) throw err
+	conn.query('DELETE FROM bookings WHERE id = ?', [req.params.id], function(err, result) {
 		if (err) {
-			req.flash('error', err)			
-			res.redirect('/bookings')
+		
+			req.flash('error', 'Error deleting reservation: ' + err.message);
+			res.redirect('/viewbookings');
 		} else {
-			req.flash('success', 'Reservation deleted successfully! id = ' + req.params.id)			
-			res.redirect('/bookings')
+			console.log(req.flash('success'));
+			req.flash('success', 'Reservation deleted successfully!');
+			res.redirect('/viewbookings');
 		}
-	})	
-})
+	});	
+});
 // Assuming you're using Express and a MySQL database connection
 
 app.get('/get-room-price/:roomTypeId', (req, res) => {

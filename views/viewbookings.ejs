@@ -36,7 +36,7 @@
 				<td><%=data.days_num%></td>
 				<td><%=data.created_on.toLocaleDateString()%></td>
 				<td><%=data.amount%></td>
-				<td><%=data.roomType%></td>
+				<td><%=data.room_type%></td>
 			
  												
 				<td><a href="/booking-update/<%=data.id%>" class="btn">Update</a></td>	 
@@ -50,11 +50,6 @@
 			<% i++; }) %> <%}%>					
 		</table>
 	</div>
-	<!-- <div id="book-now">									
-		<a class="btn" href="newbooking">
-			<span>New Booking</span>
-		 </a>									
-	</div> -->
 </div>
 </body>
 
