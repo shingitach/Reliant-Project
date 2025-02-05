@@ -28,18 +28,28 @@ function calculateNumberOfDays() {
 }
  
 function calculateAmount() {
-    const roomType = document.getElementById('roomType').value;
+
+    var roomType = document.getElementById('roomType').value;
+    const roomRates = JSON.parse( localStorage.getItem('roomRates') || '{}');
+    let pricePerDay =  roomRates[roomType]; 
     const numberOfDays = document.getElementById('numberOfDays').value;
+    //    let pricePerDay = 0;
     if (numberOfDays > 0) {
     // Example pricing logic based on room type
-    let pricePerDay = 0;
-    if (roomType === 'single') {
-        pricePerDay = 100; // Example price for single room
-    } else if (roomType === 'double') {
-        pricePerDay = 150; // Example price for double room
-    } else if (roomType === 'suite') {
-        pricePerDay = 200; // Example price for suite
-    }
+    // let pricePerDay = 0;
+    // if (roomType === 'single') {
+    //     //pricePerDay = 100; // Example price for single room
+    //    results
+    //     pricePerDay = results[0].price;
+    // } else if (roomType === 'double') {
+    //     //pricePerDay = 150; // Example price for double room
+   
+    //     pricePerDay = results[0].price;
+    // } else if (roomType === 'suite') {
+    //     //pricePerDay = 200; // Example price for suite
+     
+    //     pricePerDay = results[0].price;
+    // }
  
     const totalAmount = pricePerDay * numberOfDays;
     document.getElementById('Amount').value = totalAmount > 0 ? totalAmount : '';

@@ -1,3 +1,5 @@
+const utils = require('./utils')
+var conn = require('./dbConfig');
 const express = require('express'); 
 //This line imports the Express framework by requiring the 'express' module.  
 // The express variable now holds the reference  to the Express application.
@@ -8,7 +10,6 @@ const app = express();
 
 const session = require('express-session');
 
-var conn = require('./dbConfig');
 //setting connection the db
 
 app.set('view engine','ejs'); 
@@ -25,6 +26,7 @@ app.use(session({
       }
     
 }));
+app.locals.roomPricesPerDay = utils.getRoomPricesPerDay(conn);  
 //creates the db login session
 app.use(express.json()); 
 //app.use(express.urlencoded({ extended: true}));
