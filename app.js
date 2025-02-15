@@ -11,7 +11,8 @@ const app = express();
 const session = require('express-session');
 
 //setting connection the db
-
+const fs = require('fs');
+const path = require('path');
 app.set('view engine','ejs'); 
 // configures Express to use  EJS as the view engine. 
 // EJS allows us to embed JavaScript code directly in our HTML templates. 
@@ -39,12 +40,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 var flash = require('req-flash');
 app.use(flash());
 app.get('/', function (req, res){ 
-           res.render("home"); 
+    res.render("home", { message: req.flash('message') });
 }); 
 // This code sets up a route for the  root URL ('/') using the app.get method. 
 // When a request is made to the root URL,  it renders the "home.ejs" template  using res.render("home").
 app.get('/home', function (req, res){ 
-    res.render("home"); 
+    var message = req.flash('message');
+    console.log(message);
+    res.render("home", { message: message });
 }); 
 app.get('/login', function(req, res){ //takes a request and sends a response    
     res.render('login');
@@ -101,7 +104,11 @@ app.post('/bookings', (req, res) => {
             console.error(error);
             res.status(500).send('Error occurred while inserting record');
         } else {
-            console.log('Record inserted successfully!, Your booking amount is : '+Amount+'$');
+           // console.log('Record inserted successfully!, Your booking amount is : '+Amount+'$');
+           //document.getElementById('message').innerHTML = 'Record inserted successfully! Your booking amount is: '+Amount+'$';
+           req.flash('message', 'Record inserted successfully! Your booking amount is: '+Amount+'$');
+           
+            console.log(req.flash('message'));
             res.redirect('/home');
         }
     });
@@ -172,6 +179,13 @@ app.get('/viewbookings', function(req, res, next){
 	});     
 });
 
+
+app.get('/gallery', function(req, res, next){		
+	const images = fs.readdirSync(path.join(__dirname, 'public', 'images'));
+    console.log(images);
+	res.render('gallery', { images: images });
+});
+
 //UPDATE BOOKINGS
 app.get('/booking-update/(:id)', function(req, res, next){
 	const sql = 'SELECT DISTINCT room_type FROM roomtypes';
@@ -227,7 +241,7 @@ app.post('/booking-update/(:id)', function(req, res, next) {
            req.flash('error', 'Error updating booking');
             res.redirect("/bookings");
         } else {
-          req.flash('success', 'Reservation updated successfully!');
+          alert('success', 'Reservation updated successfully!');
             res.redirect("/viewbookings");
         }
     });    

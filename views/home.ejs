@@ -9,16 +9,24 @@
  <BODY>
    <!-- <h4 style="color: lime; font-size: xx-large;">Auckland</h4>-->
     <%- include('partials/navbar1.ejs') %>
+
+    
+      
         <div class="container"> 
+            <% if (locals.message) { %>
+                <p><%= locals.message %></p>
+            <% } %>
 
             <h1>Welcome to Reliant</h1>
-            <img class="img2" src="/public/images/front.webp" alt="Reliant Hotel"> <!--src = source -->
+            <img class="img2" src="/public/images/front.jpg" alt="Reliant Hotel"> <!--src = source -->
             <p>Reliant Hotel</p>
            <!--  <p><a href="auckland">Auckland</a>is the commercial hub of Nz</p> -->
             <p style="color:#23086f">
                 The beautiful 5 star Reliant hotel in the heart of Auckland central business district
+                You are welcome to enjoy our 5 star hospitality. For bookings, please book <a href="/bookings">here</a>.
             </p>
         </div>
     </body>
     
 </html>
+

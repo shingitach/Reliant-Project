@@ -1,4 +1,4 @@
-h1 { color:red;}
+h1 { color:rgb(117, 97, 44);}
 h4 { color: purple; } 
 h2 { color: rgba(165, 142, 42, 0.527); }
 p  { color:red;}
@@ -30,3 +30,54 @@ p  { color:red;}
         padding-bottom:10px;
     }
     
+    /* gallery.css */
+.gallery {
+    position: relative;
+    width: 80%;
+    margin: 40px auto;
+  }
+  
+  .gallery-item {
+    display: initial;
+    width: 100%;
+    height: 500px; /* adjust to your image height */
+  }
+  
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .gallery-item.active {
+    display: block;
+  }
+  
+  .prev-arrow, .next-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .prev-arrow {
+    left: 0;
+  }
+  
+  .next-arrow {
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+  }
+  .figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px;
+    font-size: 16px;
+  }

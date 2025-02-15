@@ -1,0 +1,45 @@
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include('partials/header1.ejs') %>
+	</head>
+	<body>
+		<%- include('partials/navbar1.ejs') %>
+<h1>Gallery</h1>
+<!-- <div class="gallery">
+  <% images.forEach(function(image, index) { %>
+    <div class="gallery-item" data-index="<%= index %>">
+      <img src="/public/images/<%= image %>">
+    </div>
+  <% }); %> -->
+
+
+  <div class="gallery">
+    <div class="gallery-item active">
+      <img src="/public/images/front.jpg" alt="Image 1">
+      <figcaption>Hotel Front</figcaption>
+    </div>
+    <div class="gallery-item">
+      <img src="/public/images/doubleroom.jpg" alt="Image 2">
+      <figcaption>Double Room</figcaption>
+    </div>
+    <div class="gallery-item">
+      <img src="/public/images/loby.jpg" alt="Image 3">
+      <figcaption>Loby</figcaption>
+    </div>
+    <div class="gallery-item">
+        <img src="/public/images/views.jpg" alt="Image 4">
+        <figcaption>View</figcaption>
+      </div>
+    <div class="prev-arrow">&lt;</div>
+    <div class="next-arrow">&gt;</div>
+  </div>
+
+  <div class="prev-arrow">&lt;</div>
+  <div class="next-arrow">&gt;</div>
+</div>
+</body>
+    
+</html>
